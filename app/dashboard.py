@@ -30,7 +30,11 @@ col1.metric("Ventas totales", f"${df_filtered['Sales'].sum():,.0f}")
 col2.metric("Profit total", f"${df_filtered['Profit'].sum():,.0f}")
 col3.metric("Nº transacciones", f"{len(df_filtered):,}")
 
-col_left, col_right = st.columns(2)
+if df_filtered.empty:
+    st.warning("No hay datos para los filtros seleccionados.")
+    st.stop()
+
+col_left, col_center, col_right = st.columns(3)
 
 with col_left:
     st.subheader("Profit por categoría")
@@ -41,7 +45,7 @@ with col_left:
     ax.axvline(x=0, color='black', linewidth=0.8)
     st.pyplot(fig)
 
-with col_right:
+with col_center:
     st.subheader("Relación descuento y profit")
     fig2, ax2 = plt.subplots(figsize=(8, 4))
     ax2.scatter(df_filtered['Discount'], df_filtered['Profit'], alpha=0.3)
@@ -49,11 +53,37 @@ with col_right:
     ax2.set_xlabel('Descuento')
     ax2.set_ylabel('Profit')
     st.pyplot(fig2)
+    
+with col_right:
+    st.subheader("Profit por región")
+    fig3, ax3 = plt.subplots(figsize=(8, 4))
+    profit_reg = df_filtered.groupby('Region')['Profit'].sum().sort_values()
+    colors = ['red' if x < 0 else 'steelblue' for x in profit_reg]
+    profit_reg.plot(kind='bar', ax=ax3, color=colors)
+    ax3.axvline(x=0, color='black', linewidth=0.8)   
+    st.pyplot(fig3)
 
-st.subheader("Profit por subcategoría")
-fig3, ax3 = plt.subplots(figsize=(10, 4))
-profit_subcat = df_filtered.groupby('Sub-Category')['Profit'].sum().sort_values()
-colors3 = ['red' if x < 0 else 'steelblue' for x in profit_subcat]
-profit_subcat.plot(kind='barh', ax=ax3, color=colors3)
-ax3.axvline(x=0, color='black', linewidth=0.8)
-st.pyplot(fig3)
+
+años = sorted(df_filtered['Year'].unique())
+
+if len(años) == 0:
+    st.warning("No hay datos para los filtros seleccionados")
+else:
+    cols = min(2, len(años))
+    filas = (len(años) + 1) // 2
+    
+    fig4, axes4 = plt.subplots(filas, cols, figsize=(16, 6 * filas))
+    axes4 = axes4.flatten() if len(años) > 1 else [axes4]
+
+    for i, year in enumerate(años):
+        data = df_filtered[df_filtered['Year'] == year].groupby('Sub-Category')['Profit'].sum().sort_values()
+        colors = ['red' if x < 0 else 'steelblue' for x in data]
+        data.plot(kind='barh', ax=axes4[i], color=colors)
+        axes4[i].axvline(x=0, color='black', linewidth=0.8)
+        axes4[i].set_title(f'Profit por subcategoría — {year}')
+
+    for j in range(i + 1, len(axes4)):
+        axes4[j].set_visible(False)
+
+    plt.tight_layout()
+    st.pyplot(fig4)
