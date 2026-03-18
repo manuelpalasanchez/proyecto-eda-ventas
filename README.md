@@ -4,7 +4,7 @@ Dashboard interactivo con análisis exploratorio completo sobre ventas de una gr
 
 **[Ver app desplegada](https://proyecto-eda-ventas-nsdlcb5tjamt8j46uxpun7.streamlit.app/)**
 
-![Dashboard Preview](assets/dashboard_general.png)
+![Dashboard Preview](assets/dashboard_problemas.png)
 
 ---
 
