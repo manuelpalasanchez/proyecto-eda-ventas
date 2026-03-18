@@ -16,25 +16,25 @@ Identificar qué categorías, productos y prácticas comerciales generan benefic
 
 ## Insights clave
 
-**Tables destruye valor sistemáticamente** — acumula -17.725$ en 4 años consecutivos de pérdidas. Eliminación del catálogo recomendada.
+**Tables destruye valor sistemáticamente** - acumula -17.725$ en 4 años consecutivos de pérdidas. Eliminación del catálogo recomendada.
 
-**Descuentos superiores al 40% nunca son rentables** — sin excepción, ninguna transacción con descuento mayor al 40% genera profit positivo.
+**Descuentos superiores al 40% nunca son rentables** - sin excepción, ninguna transacción con descuento mayor al 40% genera profit positivo.
 
-**Machines cambia de tendencia en 2017** — tras 3 años rentables, entra en pérdidas. Señal de alarma que requeriría investigación inmediata.
+**Machines cambia de tendencia en 2017** - tras 3 años rentables, entra en pérdidas. Señal de alarma que requeriría investigación inmediata.
 
-**Technology es el motor del negocio** — Copiers, Phones y Accessories lideran el profit de forma consistente.
+**Technology es el motor del negocio** - Copiers, Phones y Accessories lideran el profit de forma consistente.
 
-**West supera a Central en un ratio de 2.73x** — brecha que sugiere prácticas comerciales replicables en otras regiones.
+**West supera a Central en un ratio de 2.73x** - brecha que sugiere prácticas comerciales replicables en otras regiones.
 
 ---
 
 ## Stack tecnológico
 
-- **Python** — lenguaje principal
-- **Pandas** — carga, limpieza y análisis de datos
-- **Plotly** — visualizaciones interactivas
-- **Streamlit** — dashboard web desplegado en Streamlit Cloud
-- **Jupyter Notebook** — análisis exploratorio documentado
+- **Python** - lenguaje principal
+- **Pandas** - carga, limpieza y análisis de datos
+- **Plotly** - visualizaciones interactivas
+- **Streamlit** - dashboard web desplegado en Streamlit Cloud
+- **Jupyter Notebook** - análisis exploratorio documentado
 
 ---
 
@@ -72,7 +72,9 @@ streamlit run app/dashboard.py
 
 ---
 ## Notebook
+
 El análisis exploratorio completo está documentado paso a paso en [`notebooks/01_eda_superstore.ipynb`](notebooks/01_eda_superstore.ipynb), incluyendo preguntas de negocio, análisis numérico, visualizaciones e insights finales.
+
 ---
 
-*Dataset: [Sample Superstore — Kaggle](https://www.kaggle.com/datasets/vivek468/superstore-dataset-final) — 9.994 transacciones, 2014–2017.*
+*Dataset: [Sample Superstore - Kaggle](https://www.kaggle.com/datasets/vivek468/superstore-dataset-final) — 9.994 transacciones, 2014–2017.*
