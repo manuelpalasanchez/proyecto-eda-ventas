@@ -1,89 +1,67 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import plotly.express as px
 from pathlib import Path
+from tabs import tab_resumen, tab_problemas, tab_evolucion
+st.set_page_config(
+    page_title="Superstore Sales Dashboard",
+    page_icon="📊",
+    layout="wide"
+)
 
-st.set_page_config(page_title="Superstore Dashboard", layout="wide")
+@st.cache_data
+def load_data():
+    BASE_DIR = Path(__file__).parent.parent
+    df = pd.read_csv(BASE_DIR / 'data' / 'superstore.csv', encoding='latin-1')
+    df['Order Date'] = pd.to_datetime(df['Order Date'])
+    df['Year'] = df['Order Date'].dt.year
+    df['Month'] = df['Order Date'].dt.month
+    return df
 
-BASE_DIR = Path(__file__).parent.parent
-df = pd.read_csv(BASE_DIR / 'data' / 'superstore.csv', encoding='latin-1')
-df['Order Date'] = pd.to_datetime(df['Order Date'])
-df['Year'] = df['Order Date'].dt.year
+df = load_data()
 
+st.title("📊 Superstore Sales Dashboard")
+st.markdown("""
+Análisis exploratorio de ventas de una gran superficie estadounidense (2014–2017).  
+Identifica qué categorías, productos y prácticas comerciales generan beneficios y cuáles generan pérdidas.""")
 
-st.title("Dashboard de Ventas — Superstore")
+st.sidebar.title("Filtros")
+st.sidebar.markdown("Filtra los datos para explorar segmentos específicos.")
 
-st.sidebar.header("Filtros")
 years = sorted(df['Year'].unique())
 selected_years = st.sidebar.multiselect("Año", years, default=years)
+
 categories = sorted(df['Category'].unique())
 selected_cats = st.sidebar.multiselect("Categoría", categories, default=categories)
 
-df_filtered = df[
+regions = sorted(df['Region'].unique())
+selected_regions = st.sidebar.multiselect("Región", regions, default=regions)
+
+
+df_filtrado = df[
     (df['Year'].isin(selected_years)) &
-    (df['Category'].isin(selected_cats))
+    (df['Category'].isin(selected_cats)) &
+    (df['Region'].isin(selected_regions))
 ]
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Ventas totales", f"${df_filtered['Sales'].sum():,.0f}")
-col2.metric("Profit total", f"${df_filtered['Profit'].sum():,.0f}")
-col3.metric("Nº transacciones", f"{len(df_filtered):,}")
 
-if df_filtered.empty:
+if df_filtrado.empty:
     st.warning("No hay datos para los filtros seleccionados.")
     st.stop()
 
-col_left, col_center, col_right = st.columns(3)
 
-with col_left:
-    st.subheader("Profit por categoría")
-    fig, ax = plt.subplots(figsize=(8, 4))
-    profit_cat = df_filtered.groupby('Category')['Profit'].sum().sort_values()
-    colors = ['red' if x < 0 else 'steelblue' for x in profit_cat]
-    profit_cat.plot(kind='barh', ax=ax, color=colors)
-    ax.axvline(x=0, color='black', linewidth=0.8)
-    st.pyplot(fig)
-
-with col_center:
-    st.subheader("Relación descuento y profit")
-    fig2, ax2 = plt.subplots(figsize=(8, 4))
-    ax2.scatter(df_filtered['Discount'], df_filtered['Profit'], alpha=0.3)
-    ax2.axhline(y=0, color='red', linestyle='--')
-    ax2.set_xlabel('Descuento')
-    ax2.set_ylabel('Profit')
-    st.pyplot(fig2)
-    
-with col_right:
-    st.subheader("Profit por región")
-    fig3, ax3 = plt.subplots(figsize=(8, 4))
-    profit_reg = df_filtered.groupby('Region')['Profit'].sum().sort_values()
-    colors = ['red' if x < 0 else 'steelblue' for x in profit_reg]
-    profit_reg.plot(kind='bar', ax=ax3, color=colors)
-    ax3.axvline(x=0, color='black', linewidth=0.8)   
-    st.pyplot(fig3)
+k1, k2, k3, k4 = st.columns(4)
+k1.metric("Ventas totales", f"${df_filtrado['Sales'].sum():,.0f}")
+k2.metric("Profit total", f"${df_filtrado['Profit'].sum():,.0f}")
+k3.metric("Transacciones", f"{len(df_filtrado):,}")
+k4.metric("Profit medio", f"${df_filtrado['Profit'].mean():,.1f}")
 
 
-años = sorted(df_filtered['Year'].unique())
+tab1, tab2, tab3 = st.tabs(["Resumen general", "Problemas detectados", "Evolución temporal"])
 
-if len(años) == 0:
-    st.warning("No hay datos para los filtros seleccionados")
-else:
-    cols = min(2, len(años))
-    filas = (len(años) + 1) // 2
-    
-    fig4, axes4 = plt.subplots(filas, cols, figsize=(16, 6 * filas))
-    axes4 = axes4.flatten() if len(años) > 1 else [axes4]
-
-    for i, year in enumerate(años):
-        data = df_filtered[df_filtered['Year'] == year].groupby('Sub-Category')['Profit'].sum().sort_values()
-        colors = ['red' if x < 0 else 'steelblue' for x in data]
-        data.plot(kind='barh', ax=axes4[i], color=colors)
-        axes4[i].axvline(x=0, color='black', linewidth=0.8)
-        axes4[i].set_title(f'Profit por subcategoría — {year}')
-
-    for j in range(i + 1, len(axes4)):
-        axes4[j].set_visible(False)
-
-    plt.tight_layout()
-    st.pyplot(fig4)
+with tab1:
+    tab_resumen.render(df_filtrado)
+with tab2:
+    tab_problemas.render(df_filtrado)
+with tab3:
+    tab_evolucion.render(df_filtrado)
