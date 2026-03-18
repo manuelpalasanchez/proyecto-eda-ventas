@@ -35,7 +35,7 @@ def render(df_filtrado):
             y='Region',
             orientation='h',
             color='Profit_Total',
-            color_continuous_scale='Blues',
+            color_discrete_sequence=['steelblue'],
             title='Profit total por región',
             hover_data={'Profit_Medio': ':.2f'}
         )
