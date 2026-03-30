@@ -2,7 +2,7 @@
 
 Dashboard interactivo con análisis exploratorio completo sobre ventas de una gran superficie estadounidense (2014–2017).
 
-**[Ver app desplegada](https://proyecto-eda-ventas-nsdlcb5tjamt8j46uxpun7.streamlit.app/)**
+**[Ver app desplegada](https://proyecto-eda-ventas-manuelpalasanchez.streamlit.app/)**
 
 ![Dashboard Preview](assets/dashboard_problemas.png)
 
